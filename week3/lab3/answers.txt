@@ -1,0 +1,35 @@
+sort1 uses: Bubble Sort
+
+How do you know?: There is a change in the order for
+the best and the worst cases.
+
+sort2 uses: Merge Sort
+
+How do you know?: It seems to be the quickest for all
+cases, furthermore, the best and worst cases are of
+the same order in all cases.
+
+sort3 uses: Selection Sort
+
+How do you know?: It seems to have the same order for
+the best and worst cases.
+
+
+Notes :
+            TIME[s]
+            Bubble  Merge   Selection
+            Sort 1  Sort2   Sort3
+5k
+random      0.114   0.016   0.032
+reversed    0.064   0.010   0.079
+sorted      0.012   0.011   0.033
+
+10k
+random      0.488   0.018   0.246
+reversed    0.649   0.017   0.302
+sorted      0.022   0.019   0.262
+
+50k
+random      17.166  3.937   7.892
+reversed    12.930  5.341   8.614
+sorted      3.542   4.969   7.323
