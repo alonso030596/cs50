@@ -1,5 +1,6 @@
 #include <cs50.h>
 #include <stdio.h>
+#include <string.h>
 
 // Max number of candidates
 #define MAX 9
@@ -89,71 +90,171 @@ int main(int argc, string argv[])
         printf("\n");
     }
 
+        for(int i = 0; i < candidate_count; i++)
+        {
+            for(int j = 0; j < candidate_count; j++)
+            {
+                printf("%d  ",preferences[i][j]);
+            }
+
+            putchar('\n');
+        }
+
+    putchar('\n');
+
     add_pairs();
+
+    for(int i = 0; i < pair_count; i++)
+        {
+                printf("%s-%s %d-%d\n",candidates[pairs[i].winner],candidates[pairs[i].loser], preferences[pairs[i].winner][pairs[i].loser], preferences[pairs[i].loser][pairs[i].winner]);
+        }
+
+    putchar('\n');
+
     sort_pairs();
+
+    for(int i = 0; i < pair_count; i++)
+        {
+                printf("%s-%s %d-%d\n",candidates[pairs[i].winner],candidates[pairs[i].loser], preferences[pairs[i].winner][pairs[i].loser], preferences[pairs[i].loser][pairs[i].winner]);
+        }
+
+    putchar('\n');
+
     lock_pairs();
+
+    for(int i = 0; i < candidate_count; i++)
+        {
+            for(int j = 0; j < candidate_count; j++)
+            {
+                printf("%5s  ", locked[i][j] ? "true" : "false");
+            }
+
+            putchar('\n');
+        }
+
+    putchar('\n');
+
     print_winner();
+
     return 0;
 }
 
-/*
-Update ranks given a new vote
-
--Look for a candidate called name.
--If candidate found, update ranks and return true.ranks[i] is the 
-voter's ith preference.
--If no candidate found, don't update any ranks and return false.
-*/
+//Update ranks given a new vote
 bool vote(int rank, string name, int ranks[])
 {
-    // TODO
-    return false;
+    int i = 0;
+    while(strcmp(name, candidates[i]) && ++i < candidate_count)
+        ;
+
+    if(i == candidate_count)
+        return false;
+
+    ranks[rank] = i;
+
+    return true;
 }
 
-/*
-Update preferences given one voter's ranks
--Update the preferences array based on the voter's ranks.
-*/
+//Update preferences given one voter's ranks
 void record_preferences(int ranks[])
 {
-    // TODO
+    for(int i = 0; i < candidate_count - 1; i++)
+    {
+        for(int j = 1; i + j < candidate_count; j++)
+        {
+            preferences[ranks[i]][ranks[i + j]]++;
+        }
+    }
+
     return;
 }
 
 //Record pairs of candidates where one is preferred over the other.
 void add_pairs(void)
 {
-    // TODO
+    for(int i = 0; i < candidate_count - 1; i++)
+    {
+        for(int j = 1; i + j < candidate_count; j++)
+        {
+            if(preferences[i][i + j] > preferences[i + j][i])
+            {
+                pairs[pair_count].winner = i;
+                pairs[pair_count].loser = i + j;
+                pair_count++;
+            }
+
+            else if(preferences[i][i + j] < preferences[i + j][i])
+            {
+                pairs[pair_count].winner = i + j;
+                pairs[pair_count].loser = i;
+                pair_count++;
+            }
+
+            else
+                ;
+        }
+    }
+
     return;
 }
 
 // Sort pairs in decreasing order by strength of victory
 void sort_pairs(void)
 {
-    // TODO
+    int difference(int);
+    void swap_pairs(pair, pair);
+
+    int i, swap_counter;
+    //Bubble sort
+    do
+    {
+        i = 0;
+        swap_counter = 0;
+
+        while(i + 1 < pair_count)
+        {
+            if(difference(i) < difference(i + 1))
+            {
+                swap_pairs(pairs[i], pairs[i + 1]);
+                swap_counter++;
+            }
+            i++;
+        }
+    }
+    while(swap_counter != 0);
+
     return;
 }
 
-/*
-Lock pairs into the candidate graph in order, without creating cycles
--Update locked to create the locked graph by adding all edges in 
-decreasing order of victory strength, as long as there is no cycle.
-*/
+int difference(int index)
+{
+    return preferences[pairs[index].winner][pairs[index].loser] - preferences[pairs[index].loser][pairs[index].winner];
+}
+
+void swap_pairs(pair p1, pair p2)
+{
+    pair aux;
+
+    aux = p1;
+    p1 = p2;
+    p2 = aux;
+
+    return;
+}
+
+//Lock pairs into the candidate graph in order, without creating cycles
 void lock_pairs(void)
 {
-    // TODO
+     for(int i = 0; i < pair_count; i++)
+    {
+            locked[pairs[i].winner][pairs[i].loser] = true;
+    }
+
     return;
 }
 
-/*
-Print the winner of the election
--Print out the winner of the election, who will be the source of 
-the graph.
--You may assume the will not be more than one source.
-*/
+//Print the winner of the election
 void print_winner(void)
 {
-    // TODO
+    //printf("%s\n",candidates[pairs[0].winner]);
     return;
 }
-
