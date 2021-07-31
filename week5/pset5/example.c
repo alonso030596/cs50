@@ -1,9 +1,18 @@
 #include <stdio.h>
 #include <math.h>
 
+#define LENGTH 45
+
 int main(void)
 {
-    int n = pow(26, 3);
+    FILE *fptr = fopen("example.txt", "r");
 
-    printf("%d\n", n);
+    if(fptr == NULL)
+        return 0;
+    
+    char temp[LENGTH + 2];
+
+    
+    while(fgets(temp, LENGTH + 2, fptr) != NULL)
+        printf("%s", temp);
 }

@@ -34,8 +34,15 @@ bool check(const char *word)
 // Hashes word to a number
 unsigned int hash(const char *word)
 {
+    int index = 0;
 
-    return 0;
+    for(int i = 0; i < LETTERS_PER_BUCKET; i++)
+    {
+        // i = ( ASCII - 97 ) * 26 ^ 3 + ( ASCII - 97 ) * 26 ^ 2 ... 
+        index += (*(word + i) - 97) * pow(ALPHABET_LENGTH, LETTERS_PER_BUCKET - i - 1); 
+    }
+
+    return index;
 }
 
 // Loads dictionary into memory, returning true if successful, else false
@@ -45,9 +52,13 @@ bool load(const char *dictionary)
 
     if(ptr == NULL)
         return false;
+    
+    char temp[LENGTH + 2];
 
-    while(fgets(, , dictionary) != EOF)
-
+    while(fgets(temp, LENGTH + 2, fptr) != NULL)
+    {
+        
+    }
 
 }
 
