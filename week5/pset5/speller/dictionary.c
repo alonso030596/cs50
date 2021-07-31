@@ -2,6 +2,13 @@
 
 #include <stdbool.h>
 
+#include <string.h>
+#include <strings.h>
+#include <math.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <ctype.h>
+
 #include "dictionary.h"
 
 // Represents a node in a hash table
@@ -12,14 +19,17 @@ typedef struct node
 }
 node;
 
-// Constants
-#define ALPHABET_LENGTH 26
+// Represents the size of the dictionary
+unsigned int dictionary_size = 0;
 
-// Number of letters in each bucket ! CHANGE !
+// Constants
+#define ALPHABET_LENGTH 27 // 26 + apostrophe
+
+// Number of letters in each bucket !! CHANGE !!
 #define LETTERS_PER_BUCKET 2
 
-// Number of buckets in hash table
-const unsigned int N = pow(ALPHABET_LENGTH, LETTERS_PER_BUCKET);
+// Number of buckets in hash table !! CHANGE !!
+const unsigned int N = 27 * 27;
 
 // Hash table
 node *table[N];
@@ -27,7 +37,17 @@ node *table[N];
 // Returns true if word is in dictionary, else false
 bool check(const char *word)
 {
-    // TODO
+    unsigned int index = hash(word);
+    node *cursor = table[index];
+
+    while(cursor != NULL)
+    {
+        if(!strcasecmp(cursor -> word, word))
+            return true;
+
+        cursor = cursor -> next;
+    }
+
     return false;
 }
 
@@ -38,8 +58,17 @@ unsigned int hash(const char *word)
 
     for(int i = 0; i < LETTERS_PER_BUCKET; i++)
     {
-        // i = ( ASCII - 97 ) * 26 ^ 3 + ( ASCII - 97 ) * 26 ^ 2 ... 
-        index += (*(word + i) - 97) * pow(ALPHABET_LENGTH, LETTERS_PER_BUCKET - i - 1); 
+        if(islower(*(word + i)))
+            index += (*(word + i) - 97) * pow(ALPHABET_LENGTH, LETTERS_PER_BUCKET - i - 1);
+
+        else if(isupper(*(word + i)))
+            index += (*(word + i) - 65) * pow(ALPHABET_LENGTH, LETTERS_PER_BUCKET - i - 1);
+
+        else if(*(word + i) == '\'')
+            index += (*(word + i) - 13) * pow(ALPHABET_LENGTH, LETTERS_PER_BUCKET - i - 1);
+
+        else
+            ;
     }
 
     return index;
@@ -50,28 +79,58 @@ bool load(const char *dictionary)
 {
     FILE *fptr = fopen(dictionary, "r");
 
-    if(ptr == NULL)
+    if(fptr == NULL)
         return false;
-    
-    char temp[LENGTH + 2];
 
-    while(fgets(temp, LENGTH + 2, fptr) != NULL)
+    char new_word[LENGTH + 1]; //longest word length + \0
+    unsigned int index;
+    node* new_node;
+
+    while(fscanf(fptr, "%s", new_word) != EOF)
     {
-        
+        if((new_node = malloc(sizeof(node))) == NULL)
+            printf("error allocating memory\n");
+
+        index = hash(new_word);
+        strcpy(new_node -> word, new_word);
+
+        new_node -> next = table[index];
+        table[index] = new_node;
+        dictionary_size++;
     }
 
+    fclose(fptr);
+
+    return true;
 }
 
 // Returns number of words in dictionary if loaded, else 0 if not yet loaded
 unsigned int size(void)
 {
-    // TODO
-    return 0;
+    return dictionary_size;
 }
 
 // Unloads dictionary from memory, returning true if successful, else false
 bool unload(void)
 {
-    // TODO
-    return false;
+    int i;
+    node *cursor;
+    node *tmp;
+
+    for(i = 0; i < N; i++)
+    {
+        cursor = tmp = table[i];
+
+        while(cursor != NULL)
+        {
+            cursor = cursor -> next;
+            free(tmp);
+            tmp = cursor;
+        }
+    }
+
+    if(i != N)
+        return false;
+
+    return true;
 }
