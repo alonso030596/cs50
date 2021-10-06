@@ -1,0 +1,185 @@
+SQL
+
+"Structured Query Language"
+
+When constructing a table in SQL, it's very important to choose
+one column to be your primary key.
+
+Primary keys enable rows of a table to be uniquely and quickly identified
+Choosing the primary key appropiately can make subsequent
+operations on the tagle much easier
+
+It is also possbile to establish a joint primary key:
+A combination of two columns that is always guaranteed to be unique
+
+We will primarily consider just four operations that one may perform
+o an table:
+
+INSERT
+SELECT
+UPDATE
+DELETE
+
+INSERT
+    Add information to a table.
+    
+        INSERT INTO
+        <table>
+        (<columns>)
+        VALUES
+        (<values>)
+
+    example:
+
+       INSERT INTO
+       users
+       (username, password, fullname)
+       VALUES
+       ('newman', 'USMAIL', 'Newman')
+
+    example 2:
+       INSERT INTO
+       moms
+       (username, mother)
+       VALUES
+       ('kramer', 'Babs Kramer')
+
+
+SELECT
+    Extract information from a table.
+
+        SELECT
+        <columns>
+        FROM
+        <table>
+        WHERE
+        <condition>
+        ORDER BY
+        <column>
+        
+    example:
+        
+        SELECT
+        idnum, fullname
+        FROM
+        users
+
+    example 2:
+
+        SELECT
+        password
+        FROM
+        users
+        WHERE
+        idnum < 12
+        
+    example 3:
+
+        SELECT
+        *       // *: every column
+        FROM
+        mom
+        WHERE
+        username = 'jerry'
+
+What if we now find ourselves in a situation where we need to get a user's fullname (from "users" table) and their mother's name (from the mother table).
+
+SELECT (JOIN)
+    Extract information from multiple tables.
+
+        SELECT
+        <columns>
+        FROM
+        <table1>
+        JOIN
+        <table2>
+        ON
+        <predicate>
+
+    example:
+        
+        SELECT
+        users.fullname, moms.mother
+        FROM
+        users
+        JOIN
+        moms
+        ON
+        users.username = moms.username
+
+
+UPDATE
+    Modify information in a table.
+
+        UPDATE
+        <table>
+        SET
+        <coumn> = <value>
+        WHERE
+        <predicate>
+
+    example:
+        
+        UPDATE
+        users
+        SET
+        password = 'yadayada'
+        WHERE
+        idnum = 10
+
+
+DELETE
+    Remove information from a table
+        
+        DELETE FROM
+        <table>
+        WHERE
+        <predicate>
+
+    example:
+
+        DELETE FROM
+        users
+        WHERE
+        username = 'newman'
+
+
+C: "Create"
+R: "Read"
+U: "Update"
+D: "Delete"
+
+CREATE, INSERT
+SELECT
+UPDATE
+DELETE
+...
+
+sqlite3
+
+.mode csv, tsv ...
+.import 'filename.csv' table_name
+CREATE TABLE table_name (column type, ...);
+.schema
+SELECT columns(* for all columns) FROM table_name;
+
+AVG
+COUNT DISTINCT
+LOWER
+MAX
+MIN
+UPPER...
+
+SELECT DISTINCT(column) FROM SHOWS
+
+WHERE
+LIKE
+ORDER BY
+LIMIT
+GROUP BY
+...
+
+SELECT title FROM shows WHERE tilte = "the office";
+
+
+
