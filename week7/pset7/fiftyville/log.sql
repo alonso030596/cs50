@@ -23,9 +23,9 @@ SELECT city FROM airports WHERE id = (SELECT destination_airport_id FROM flights
 --SELECT id FROM flights WHERE origin_airport_id IN (SELECT id FROM airports WHERE city = "Fiftyville") AND day = 29 AND month = 7 AND year = 2020 ORDER BY hour LIMIT 1);
 
 --Passengers's passport numbers of flight
---SELECT passport_number FROM passengers WHERE flight_id = (SELECT id FROM flights WHERE origin_airport_id IN (SELECT id FROM airports WHERE city = "Fiftyville") AND day = 29 AND month = 7 AND year = 2020 ORDER BY hour LIMIT 1); 
+--SELECT passport_number FROM passengers WHERE flight_id = (SELECT id FROM flights WHERE origin_airport_id IN (SELECT id FROM airports WHERE city = "Fiftyville") AND day = 29 AND month = 7 AND year = 2020 ORDER BY hour LIMIT 1);
 
--- This query finds the matching names considering all the information.
+--This query finds the matching names considering all the information about the thief.
 SELECT
     name
     FROM
@@ -46,17 +46,17 @@ SELECT
                     atm_transactions
                     WHERE
                     day = 28 AND month = 7 AND year = 2020 AND atm_location = "Fifer Street" AND transaction_type = "withdraw"
-               )
-       )
+              )
+      )
     AND
     phone_number
     IN (
         SELECT
-            caller -- or receiver
+            caller
             FROM
             phone_calls
             WHERE day = 28 AND month = 7 AND year = 2020 AND duration <= 60
-       )
+      )
     AND
     passport_number
     IN (
@@ -86,7 +86,7 @@ SELECT
                              LIMIT 1
                         ))
     AND
-    license_plate 
+    license_plate
     IN (
         SELECT
             license_plate
@@ -94,4 +94,28 @@ SELECT
             courthouse_security_logs
             WHERE
             day = 28 AND month = 7 AND year = 2020 AND hour = 10 AND minute >= 15 AND minute <= 25
-       );
+      );
+
+--This query finds the name of the accomplice based on thief's name.
+SELECT
+name
+FROM
+people
+WHERE
+phone_number
+IN  (
+    SELECT
+    receiver
+    FROM
+    phone_calls
+    WHERE
+    caller = (
+        SELECT
+        phone_number
+        FROM
+        people
+        WHERE
+        name = "Ernest"
+             )
+    AND day = 28 AND month = 7 AND year = 2020 AND duration <= 60
+    )
